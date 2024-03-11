@@ -4,34 +4,30 @@ namespace App\Task1;
 
 class Solution
 {
-
-    protected array $result = [];
-
-    // [2, 3, 5], 8
-
-    function combinationSum(array $candidates, int $target)
+    function combinationSum($candidates, $target)
     {
-        $arr = [];
+        $result = [];
+        $current = [];
+        sort($candidates);
+        $this->backtrack($result, $current, $candidates, $target, 0);
+        return $result;
+    }
 
-        for ($i = 0; count($candidates) > $i; $i++) {
+    function backtrack(&$result, &$current, $candidates, $target, $start)
+    {
 
-            $target = ($target - $candidates[$i]);
-
-            if ($target > $candidates[$i]) {
-                $arr[$i] = $candidates[$i];
-                $this->combinationSum($candidates, $target);
-
-                if (in_array($target, $candidates)) {
-                    $arr[$i] = $target;
-                }
-            }
-
-            if (array_sum($arr) != $target) {
-                unset($arr[$i]);
-            }
-
+        if ($target === 0) {
+            $result[] = $current;
+            return;
         }
-
-        return $arr;
+        for ($i = $start; $i < count($candidates); $i++) {
+            if ($candidates[$i] > $target)
+                break;
+            if ($i > $start && $candidates[$i] === $candidates[$i - 1])
+                continue;
+            $current[] = $candidates[$i];
+            $this->backtrack($result, $current, $candidates, $target - $candidates[$i], $i);
+            array_pop($current);
+        }
     }
 }
